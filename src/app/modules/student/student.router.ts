@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { getStudents } from './student.controller';
+import { studentController } from './student.controller';
 
 const router = Router();
 
-router.get('/', getStudents);
+router.get('/', studentController.getStudents);
 
 export const StudentRouter = router;

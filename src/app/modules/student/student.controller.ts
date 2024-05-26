@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { studentService } from './student.service';
 
-export const getStudents = async (req: Request, res: Response) => {
+const getStudents = async (req: Request, res: Response) => {
   try {
     const student = await studentService.getStudents();
 
@@ -9,4 +9,8 @@ export const getStudents = async (req: Request, res: Response) => {
   } catch (err) {
     res.status(500).send(err);
   }
+};
+
+export const studentController = {
+  getStudents,
 };
