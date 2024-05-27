@@ -2,7 +2,8 @@
 import { UserModel } from './user.model';
 
 const createUser = async (userData: any) => {
-  const createUser = await UserModel.create(userData);
+  const createUser = new UserModel(userData);
+  await createUser.save();
   return createUser;
 };
 
