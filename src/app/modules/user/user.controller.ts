@@ -4,6 +4,8 @@ import config from '../../config';
 
 import { studentService } from '../student/student.service';
 import catchAsync from '../../../utils/catchAsync';
+import { academicSemesterService } from '../academicSemester/academicSemester.service';
+import { generateStudentId } from './user.utils';
 
 export const createUser = catchAsync(async (req, res) => {
   const { password, studentData } = req.body;
@@ -13,7 +15,18 @@ export const createUser = catchAsync(async (req, res) => {
   // if password not given use default password
   user.password = password || config.defaultPassword;
   user.role = 'student';
-  user.id = '203010001';
+
+  // check is academic semester exist
+  const academicSemester =
+    await academicSemesterService.getAcademicSemesterById(
+      studentData.admissionSemester,
+    );
+
+  if (!academicSemester) {
+    throw new Error('Academic semester not found');
+  }
+
+  user.id = await generateStudentId(academicSemester);
 
   // create new user
   const newUser = await userService.createUser(user);

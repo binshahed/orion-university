@@ -7,7 +7,7 @@ const getStudents = async () => {
   return student;
 };
 
-const createStudent = async (validatedStudent: any) => {
+const createStudent = async (validatedStudent: TStudent) => {
   const student = new StudentModel(validatedStudent);
   await student.save();
   return student;
