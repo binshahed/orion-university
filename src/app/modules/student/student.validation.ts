@@ -39,7 +39,8 @@ const studentValidationSchema = z.object({
         address: z.string(),
       }),
       profileImage: z.string(),
-      admissionSemester: z.string().optional(),
+      academicDepartment: z.string(),
+      admissionSemester: z.string(),
       isDeleted: z.boolean().default(false),
     }),
   }),
@@ -85,6 +86,7 @@ const PartialStudentValidationSchema = z.object({
     .partial()
     .optional(),
   profileImage: z.string().optional(),
+  academicDepartment: z.string().optional(),
   admissionSemester: z.string().optional(),
   isDeleted: z.boolean().default(false).optional(),
 });

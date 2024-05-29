@@ -85,6 +85,10 @@ const StudentSchema = new Schema<TStudent>(
       },
     },
     profileImage: { type: String },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicDepartment',
+    },
     admissionSemester: {
       type: Schema.Types.ObjectId,
       ref: 'AcademicSemester',
@@ -106,4 +110,4 @@ StudentSchema.pre('save', function (next) {
   next();
 });
 
-export const StudentModel = model('Student', StudentSchema);
+export const StudentModel = model<TStudent>('Student', StudentSchema);

@@ -2,6 +2,8 @@ import { Application, Request, Response } from 'express';
 import { StudentRouter } from '../modules/student/student.router';
 import { userRouter } from '../modules/user/user.router';
 import { academicSemesterRouter } from '../modules/academicSemester/academicSemester.router';
+import { academicFacultyRouter } from '../modules/academicFaculty/academicFaculty.router';
+import { academicDepartmentRouter } from '../modules/academicDepartment/academicDepartment.router';
 
 const modulesRouters = [
   {
@@ -15,6 +17,14 @@ const modulesRouters = [
   {
     path: '/api/v1/academic-semester',
     route: academicSemesterRouter,
+  },
+  {
+    path: '/api/v1/academic-faculty',
+    route: academicFacultyRouter,
+  },
+  {
+    path: '/api/v1/academic-department',
+    route: academicDepartmentRouter,
   },
 ];
 

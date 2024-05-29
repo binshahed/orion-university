@@ -6,34 +6,41 @@ import {
   AcademicSemesterCode,
   AcademicSemesterName,
 } from './academicSemester.constant';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
 
-const academicSemesterSchema = new Schema<TAcademicSemester>({
-  name: {
-    type: String,
-    enum: AcademicSemesterName,
-    required: [true, 'Name is required'],
+const academicSemesterSchema = new Schema<TAcademicSemester>(
+  {
+    name: {
+      type: String,
+      enum: AcademicSemesterName,
+      required: [true, 'Name is required'],
+    },
+    code: {
+      type: String,
+      enum: AcademicSemesterCode,
+      required: [true, 'Code is required'],
+    },
+    year: {
+      type: String,
+      max: 4,
+      required: [true, 'Year is required'],
+    },
+    endMonth: {
+      type: String,
+      enum: Months,
+      required: [true, 'End Month is required'],
+    },
+    startMonth: {
+      type: String,
+      enum: Months,
+      required: [true, 'Start Month is required'],
+    },
   },
-  code: {
-    type: String,
-    enum: AcademicSemesterCode,
-    required: [true, 'Code is required'],
+  {
+    timestamps: true,
   },
-  year: {
-    type: String,
-    max: 4,
-    required: [true, 'Year is required'],
-  },
-  endMonth: {
-    type: String,
-    enum: Months,
-    required: [true, 'End Month is required'],
-  },
-  startMonth: {
-    type: String,
-    enum: Months,
-    required: [true, 'Start Month is required'],
-  },
-});
+);
 
 academicSemesterSchema.pre('save', async function (next) {
   try {
@@ -43,7 +50,10 @@ academicSemesterSchema.pre('save', async function (next) {
     });
 
     if (semester) {
-      throw new Error('Academic Semester Already Exists');
+      throw new AppError(
+        httpStatus.NOT_FOUND,
+        'Academic Semester Already Exists',
+      );
     }
     next();
   } catch (error: any) {
@@ -63,7 +73,10 @@ async function academicSemesterUpdatePreHock(this: any, next: any) {
         });
 
         if (semester) {
-          throw new Error('Academic Semester Already Exists');
+          throw new AppError(
+            httpStatus.NOT_FOUND,
+            'Academic Semester Already Exists',
+          );
         }
       }
     }

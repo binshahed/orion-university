@@ -3,7 +3,19 @@ import { TStudent } from './student.interface';
 import { StudentModel } from './student.models';
 
 const getStudents = async () => {
-  const student = await StudentModel.find();
+  const student = await StudentModel.find()
+    .populate({
+      path: 'admissionSemester',
+      select: 'name code year startMonth endMonth -_id',
+    })
+    .populate({
+      path: 'academicDepartment',
+      select: 'name academicFaculty -_id',
+      populate: {
+        path: 'academicFaculty',
+        select: 'name -_id',
+      },
+    });
   return student;
 };
 
@@ -14,7 +26,19 @@ const createStudent = async (validatedStudent: TStudent) => {
 };
 
 const getStudentById = async (id: string) => {
-  const student = await StudentModel.findById(id);
+  const student = await StudentModel.findById(id)
+    .populate({
+      path: 'admissionSemester',
+      select: 'name code year startMonth endMonth -_id',
+    })
+    .populate({
+      path: 'academicDepartment',
+      select: 'name academicFaculty -_id',
+      populate: {
+        path: 'academicFaculty',
+        select: 'name -_id',
+      },
+    });
   return student;
 };
 
