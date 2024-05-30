@@ -1,8 +1,6 @@
 import { userService } from './user.service';
 import { TUser } from './user.interface';
 import config from '../../config';
-
-import { studentService } from '../student/student.service';
 import catchAsync from '../../../utils/catchAsync';
 import { academicSemesterService } from '../academicSemester/academicSemester.service';
 import { generateStudentId } from './user.utils';
@@ -42,15 +40,7 @@ export const createUser = catchAsync(async (req, res) => {
   user.id = await generateStudentId(academicSemester);
 
   // create new user
-  const newUser = await userService.createUser(user);
-
-  if (Object.keys(newUser).length) {
-    studentData.id = newUser.id;
-    studentData.user = newUser._id.toString();
-  }
-
-  // create student record
-  const newStudent = await studentService.createStudent(studentData);
+  const newStudent = await userService.createUser(user, studentData);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

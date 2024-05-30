@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { studentService } from './student.service';
-import { StudentValidation } from './student.validation';
 import sendResponse from '../../../utils/sendResponse';
 import catchAsync from '../../../utils/catchAsync';
 import httpStatus from 'http-status';
@@ -35,13 +34,10 @@ const updateStudentById = catchAsync(async (req, res) => {
 
   // Validate the partial data with strict validation
 
-  const validateData: any =
-    StudentValidation.PartialStudentValidationSchema.parse(studentData);
-
   // update Student by id
   const student = await studentService.updateStudentById(
     studentId,
-    validateData,
+    studentData,
   );
 
   sendResponse(res, {
@@ -54,13 +50,17 @@ const updateStudentById = catchAsync(async (req, res) => {
 
 const deleteStudentById = catchAsync(async (req, res) => {
   const studentId = req.params.studentId;
-  const student = await studentService.deleteStudentById(studentId);
+  const result = await studentService.deleteStudentById(studentId);
+
+  if (!result) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Student not found');
+  }
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Student deleted successfully!',
-    data: student,
+    data: result,
   });
 });
 
