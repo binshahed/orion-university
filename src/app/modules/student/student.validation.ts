@@ -12,35 +12,56 @@ const studentValidationSchema = z.object({
   body: z.object({
     studentData: z.object({
       name: z.object({
-        firstName: z.string(),
+        firstName: z.string().nonempty({ message: 'First name is required' }),
         middleName: z.string().optional(),
-        lastName: z.string(),
+        lastName: z.string({ message: 'Last name is required' }),
       }),
-      gender: z.enum(['male', 'female']),
-      dateOfBirth: z.string(),
-      email: z.string().email(),
-      contactNo: z.string(),
-      emergencyContactNo: z.string(),
-      emergencyContact: z.string(),
-      presentAddress: z.string(),
-      permanentAddress: z.string(),
+      gender: z.enum(['male', 'female'], {
+        message: 'Gender must be either male or female',
+      }),
+      dateOfBirth: z.string({ message: 'Date of birth is required' }),
+
+      email: z.string().email({ message: 'Invalid email address' }),
+      contactNo: z.string({ message: 'Contact number is required' }),
+      emergencyContactNo: z.string({
+        message: 'Emergency contact number is required',
+      }),
+      emergencyContact: z.string({ message: 'Emergency contact is required' }),
+      presentAddress: z.string({ message: 'Present address is required' }),
+      permanentAddress: z.string({ message: 'Permanent address is required' }),
       guardian: z.object({
-        fatherName: z.string(),
-        fatherContactNo: z.string(),
-        fatherOccupation: z.string(),
-        motherName: z.string(),
-        motherContactNo: z.string(),
-        motherOccupation: z.string(),
+        fatherName: z.string({ message: "Father's name is required" }),
+        fatherContactNo: z.string({
+          message: "Father's contact number is required",
+        }),
+        fatherOccupation: z.string({
+          message: "Father's occupation is required",
+        }),
+        motherName: z.string({ message: "Mother's name is required" }),
+        motherContactNo: z.string({
+          message: "Mother's contact number is required",
+        }),
+        motherOccupation: z.string({
+          message: "Mother's occupation is required",
+        }),
       }),
       localGuardian: z.object({
-        name: z.string(),
-        contactNo: z.string(),
-        occupation: z.string(),
-        address: z.string(),
+        name: z.string({ message: "Local guardian's name is required" }),
+        contactNo: z.string({
+          message: "Local guardian's contact number is required",
+        }),
+        occupation: z.string({
+          message: "Local guardian's occupation is required",
+        }),
+        address: z.string({ message: "Local guardian's address is required" }),
       }),
-      profileImage: z.string(),
-      academicDepartment: z.string(),
-      admissionSemester: z.string(),
+      profileImage: z.string({ message: 'Profile image is required' }),
+      academicDepartment: z.string({
+        message: 'Academic department is required',
+      }),
+      admissionSemester: z.string({
+        message: 'Admission semester is required',
+      }),
       isDeleted: z.boolean().default(false),
     }),
   }),
@@ -60,9 +81,13 @@ const UpdateStudentValidationSchema = z.object({
         })
         .partial()
         .optional(),
-      gender: z.enum(['male', 'female']).optional(),
+      gender: z
+        .enum(['male', 'female'], {
+          message: 'Gender must be either male or female',
+        })
+        .optional(),
       dateOfBirth: z.string().optional(),
-      email: z.string().email().optional(),
+      email: z.string().email({ message: 'Invalid email address' }).optional(),
       contactNo: z.string().optional(),
       emergencyContactNo: z.string().optional(),
       presentAddress: z.string().optional(),
@@ -94,6 +119,7 @@ const UpdateStudentValidationSchema = z.object({
     })
     .strict(),
 });
+
 export const StudentValidation = {
   studentValidationSchema,
   UpdateStudentValidationSchema,

@@ -13,7 +13,7 @@ const StudentSchema = new Schema<TStudent>(
     gender: {
       type: String,
       enum: ['male', 'female'],
-      required: [true, 'Gender is required'],
+      required: true,
     },
     dateOfBirth: {
       type: String,

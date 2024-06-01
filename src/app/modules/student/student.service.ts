@@ -60,6 +60,8 @@ const updateStudentById = async (
 
   if (name && Object.keys(name).length) {
     for (const [key, value] of Object.entries(name)) {
+      console.log(name);
+
       modifiedData[`name.${key}`] = value;
     }
   }

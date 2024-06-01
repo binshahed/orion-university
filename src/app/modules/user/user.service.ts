@@ -36,6 +36,8 @@ const createUser = async (userData: Partial<TUser>, studentData: TStudent) => {
   } catch (err) {
     await session.abortTransaction();
     await session.endSession();
+
+    throw new AppError(httpStatus.BAD_REQUEST, (err as Error).message);
   }
 };
 

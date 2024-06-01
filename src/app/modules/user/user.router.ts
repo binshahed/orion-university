@@ -9,8 +9,8 @@ const router = Router();
 
 router.post(
   '/create-student',
-  validateRequest(UserValidation.userValidationSchema),
-  validateRequest(StudentValidation.studentValidationSchema),
+  // validateRequest(UserValidation.userValidationSchema),
+  // validateRequest(StudentValidation.studentValidationSchema),
   userController.createUser,
 );
 
