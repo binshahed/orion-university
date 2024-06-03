@@ -25,19 +25,17 @@ const createUser = async (userData: Partial<TUser>, studentData: TStudent) => {
     // create student record
     const newStudent = await StudentModel.create([studentData], { session });
 
-    if (!newStudent.length) {
+    if (!newStudent) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
     }
 
     await session.commitTransaction();
     await session.endSession();
-
     return newStudent[0];
-  } catch (err) {
+  } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
-
-    throw new AppError(httpStatus.BAD_REQUEST, (err as Error).message);
+    throw new Error(err);
   }
 };
 

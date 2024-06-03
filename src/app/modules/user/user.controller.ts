@@ -37,6 +37,7 @@ export const createUser = catchAsync(async (req, res) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Academic semester not found');
   }
 
+  // user.id = '2025020004';
   user.id = await generateStudentId(academicSemester);
 
   // create new user

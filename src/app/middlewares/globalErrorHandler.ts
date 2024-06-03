@@ -1,40 +1,62 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
-import { ZodError, ZodIssue } from 'zod';
+import { ErrorRequestHandler } from 'express';
+import { ZodError } from 'zod';
 import config from '../config';
-import { TErrorSource } from '../interface/error.interface';
+import AppError from '../errors/AppError';
+
 import { handleZodError } from '../errors/zodError';
 import handleValidationError from '../errors/validationError';
+import { TErrorSource } from '../interface/error.interface';
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  let statusCode = err.statusCode || 500;
-  let message = 'Something went wrong' || err.message;
-  let errors = undefined || err.errors;
+  //setting default values
+  let statusCode = 500;
+  let message = 'Something went wrong!';
+  let errorSources: TErrorSource = [
+    {
+      path: '',
+      message: 'Something went wrong',
+    },
+  ];
 
   if (err instanceof ZodError) {
     const simplifiedError = handleZodError(err);
-
-    statusCode = simplifiedError.statusCode;
-    message = simplifiedError.message;
-    errors = simplifiedError.errorSource;
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSource;
   } else if (err?.name === 'ValidationError') {
     const simplifiedError = handleValidationError(err);
-
-    statusCode = simplifiedError.statusCode;
-    message = simplifiedError.message;
-    errors = simplifiedError.errorSource;
-  } else if (err instanceof Error) {
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSource;
+  } else if (err instanceof AppError) {
+    statusCode = err?.statusCode;
     message = err.message;
+    errorSources = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
+  } else if (err instanceof Error) {
+    // console.log(err);
+    message = err.message;
+    errorSources = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
   }
 
+  //ultimate return
   return res.status(statusCode).json({
     success: false,
     message,
-    errorSource: errors,
-    // Only include stack trace in development mode
-    ...(config.nodeEnv === 'development' && { stack: err.stack }),
+    errorSources,
+    err,
+    stack: config.nodeEnv === 'development' ? err?.stack : null,
   });
 };
 
