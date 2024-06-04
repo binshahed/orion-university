@@ -8,6 +8,8 @@ import AppError from '../errors/AppError';
 import { handleZodError } from '../errors/zodError';
 import handleValidationError from '../errors/validationError';
 import { TErrorSource } from '../interface/error.interface';
+import handleCastError from '../errors/handleCastError';
+import handleDuplicateError from '../errors/handleDuplicateError';
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   //setting default values
@@ -30,6 +32,16 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSource;
+  } else if (err?.name === 'CastError') {
+    const simplifiedError = handleCastError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSource;
+  } else if (err?.code === 11000) {
+    const simplifiedError = handleDuplicateError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSource;
   } else if (err instanceof AppError) {
     statusCode = err?.statusCode;
     message = err.message;
@@ -40,7 +52,6 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
       },
     ];
   } else if (err instanceof Error) {
-    // console.log(err);
     message = err.message;
     errorSources = [
       {

@@ -5,9 +5,36 @@ import { StudentModel } from './student.models';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { UserModel } from '../user/user.model';
+const getStudents = async (query: Record<string, unknown>) => {
+  const queryCopy = structuredClone(query);
+  let searchTerm = '';
 
-const getStudents = async () => {
-  const student = await StudentModel.find()
+  if (query.searchTerm) {
+    searchTerm = query.searchTerm as string;
+  }
+
+  const searchConditions = [
+    'email',
+    'name.firstName',
+    'name.lastName',
+    'presentAddress',
+  ].map((field) => ({
+    [field]: {
+      $regex: searchTerm,
+      $options: 'i',
+    },
+  }));
+
+  const studentQuery = StudentModel.find({
+    $or: searchConditions,
+  });
+
+  const excludedFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+
+  excludedFields.forEach((field) => delete queryCopy[field]);
+
+  const filteredQuery = studentQuery
+    .find(queryCopy)
     .populate({
       path: 'admissionSemester',
       select: 'name code year startMonth endMonth -_id',
@@ -20,8 +47,44 @@ const getStudents = async () => {
         select: 'name -_id',
       },
     });
-  return student;
+
+  let sortField = '-createdAt';
+
+  if (query.sort) {
+    sortField = query.sort as string;
+  }
+
+  const sortedQuery = filteredQuery.sort(sortField);
+
+  let limit = 1;
+  let page = 1;
+  let skip = 0;
+
+  if (query.limit) {
+    limit = Number(query.limit);
+  }
+
+  const limitedQuery = sortedQuery.limit(limit);
+
+  if (query.page) {
+    page = Number(query.page);
+    skip = (page - 1) * limit;
+  }
+
+  const paginatedQuery = limitedQuery.skip(skip);
+
+  let selectedFields = '';
+
+  if (query.fields) {
+    selectedFields = (query.fields as string).split(',').join(' ');
+  }
+
+  const finalQuery = await paginatedQuery.select(selectedFields);
+
+  return finalQuery;
 };
+
+// create students
 
 const createStudent = async (validatedStudent: TStudent) => {
   const student = new StudentModel(validatedStudent);
