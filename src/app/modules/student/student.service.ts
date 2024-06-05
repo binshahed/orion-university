@@ -1,87 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 import { TStudent } from './student.interface';
-import { StudentModel } from './student.models';
+
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { UserModel } from '../user/user.model';
+import { StudentModel } from './student.model';
+import { QueryBuilder } from '../../builder/QueryBuilder';
+import {
+  studentExcludedFields,
+  studentSearchableFields,
+} from './student.const';
 const getStudents = async (query: Record<string, unknown>) => {
-  const queryCopy = structuredClone(query);
-  let searchTerm = '';
+  const studentQueries = new QueryBuilder<TStudent>(
+    StudentModel.find()
+      .populate({
+        path: 'admissionSemester',
+        select: 'name code year startMonth endMonth -_id',
+      })
+      .populate({
+        path: 'academicDepartment',
+        select: 'name academicFaculty -_id',
+        populate: {
+          path: 'academicFaculty',
+          select: 'name -_id',
+        },
+      }),
+    query,
+  )
+    .search(studentSearchableFields)
+    .filter(studentExcludedFields)
+    .sort()
+    .paginate()
+    .fields();
 
-  if (query.searchTerm) {
-    searchTerm = query.searchTerm as string;
-  }
-
-  const searchConditions = [
-    'email',
-    'name.firstName',
-    'name.lastName',
-    'presentAddress',
-  ].map((field) => ({
-    [field]: {
-      $regex: searchTerm,
-      $options: 'i',
-    },
-  }));
-
-  const studentQuery = StudentModel.find({
-    $or: searchConditions,
-  });
-
-  const excludedFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
-
-  excludedFields.forEach((field) => delete queryCopy[field]);
-
-  const filteredQuery = studentQuery
-    .find(queryCopy)
-    .populate({
-      path: 'admissionSemester',
-      select: 'name code year startMonth endMonth -_id',
-    })
-    .populate({
-      path: 'academicDepartment',
-      select: 'name academicFaculty -_id',
-      populate: {
-        path: 'academicFaculty',
-        select: 'name -_id',
-      },
-    });
-
-  let sortField = '-createdAt';
-
-  if (query.sort) {
-    sortField = query.sort as string;
-  }
-
-  const sortedQuery = filteredQuery.sort(sortField);
-
-  let limit = 1;
-  let page = 1;
-  let skip = 0;
-
-  if (query.limit) {
-    limit = Number(query.limit);
-  }
-
-  const limitedQuery = sortedQuery.limit(limit);
-
-  if (query.page) {
-    page = Number(query.page);
-    skip = (page - 1) * limit;
-  }
-
-  const paginatedQuery = limitedQuery.skip(skip);
-
-  let selectedFields = '';
-
-  if (query.fields) {
-    selectedFields = (query.fields as string).split(',').join(' ');
-  }
-
-  const finalQuery = await paginatedQuery.select(selectedFields);
-
-  return finalQuery;
+  return studentQueries.modelQuery.exec();
 };
 
 // create students
@@ -93,7 +46,7 @@ const createStudent = async (validatedStudent: TStudent) => {
 };
 
 const getStudentById = async (id: string) => {
-  const student = await StudentModel.findById(id)
+  const student = await StudentModel.findOne({ id })
     .populate({
       path: 'admissionSemester',
       select: 'name code year startMonth endMonth -_id',
@@ -123,8 +76,6 @@ const updateStudentById = async (
 
   if (name && Object.keys(name).length) {
     for (const [key, value] of Object.entries(name)) {
-      console.log(name);
-
       modifiedData[`name.${key}`] = value;
     }
   }
@@ -141,8 +92,8 @@ const updateStudentById = async (
     }
   }
 
-  const updatedStudent = await StudentModel.findByIdAndUpdate(
-    studentId,
+  const updatedStudent = await StudentModel.findOneAndUpdate(
+    { id: studentId },
     { $set: modifiedData },
     { new: true, runValidators: true },
   );

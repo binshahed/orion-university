@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 
 export type TName = {
   firstName: string;
@@ -24,7 +24,7 @@ export type TLocalGuardian = {
 
 export type TStudent = {
   id?: string;
-  user: ObjectId;
+  user: Types.ObjectId;
   name: TName;
   gender: 'male' | 'female';
   dateOfBirth: string;

@@ -4,11 +4,16 @@ import { userRouter } from '../modules/user/user.router';
 import { academicSemesterRouter } from '../modules/academicSemester/academicSemester.router';
 import { academicFacultyRouter } from '../modules/academicFaculty/academicFaculty.router';
 import { academicDepartmentRouter } from '../modules/academicDepartment/academicDepartment.router';
+import { facultyRouter } from '../modules/faculty/faculty.router';
 
 const modulesRouters = [
   {
     path: '/api/v1/students',
     route: StudentRouter,
+  },
+  {
+    path: '/api/v1/faculties',
+    route: facultyRouter,
   },
   {
     path: '/api/v1/users',
