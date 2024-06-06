@@ -47,21 +47,29 @@ const updateCourseById = async (id: string, updatedData: Partial<TCourse>) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Course not found')
   }
 
-  console.log(prerequisiteCourses)
-
   if (prerequisiteCourses && prerequisiteCourses.length > 0) {
     const deletedPrerequisiteCourseIds = prerequisiteCourses
       .filter((el) => el.course && el.isDeleted)
       .map((el) => el.course)
 
-    const deletePrerequisiteCourse = await CourseModel.findByIdAndUpdate(id, {
+    await CourseModel.findByIdAndUpdate(id, {
       $pull: {
         prerequisiteCourses: { course: { $in: deletedPrerequisiteCourseIds } },
       },
     })
+
+    const addPrerequisiteCourseIds = prerequisiteCourses
+      .filter((el) => el.course && !el.isDeleted)
+      .map((el) => el)
+
+    await CourseModel.findByIdAndUpdate(id, {
+      $addToSet: { prerequisiteCourses: { $each: addPrerequisiteCourseIds } },
+    })
   }
 
-  return updatedCourse
+  const result = await CourseModel.findById(id)
+
+  return result
 }
 
 const deleteCourseById = async (id: string) => {
