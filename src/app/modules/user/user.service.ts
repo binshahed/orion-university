@@ -1,86 +1,123 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import mongoose from 'mongoose';
-import { UserModel } from './user.model';
-import AppError from '../../errors/AppError';
-import httpStatus from 'http-status';
-import { TUser } from './user.interface';
-import { TStudent } from '../student/student.interface';
+import mongoose from 'mongoose'
+import { UserModel } from './user.model'
+import AppError from '../../errors/AppError'
+import httpStatus from 'http-status'
+import { TUser } from './user.interface'
+import { TStudent } from '../student/student.interface'
 
-import { FacultyModel } from '../faculty/faculty.model';
-import { TFaculty } from '../faculty/faculty.interface';
-import { StudentModel } from '../student/student.model';
+import { FacultyModel } from '../faculty/faculty.model'
+import { TFaculty } from '../faculty/faculty.interface'
+import { StudentModel } from '../student/student.model'
+import { TAdmin } from '../admin/admin.interface'
+import { AdminModel } from '../admin/admin.model'
 
 const createStudentIntoDb = async (
   userData: Partial<TUser>,
   studentData: TStudent,
 ) => {
-  const session = await mongoose.startSession();
+  const session = await mongoose.startSession()
 
-  await session.startTransaction();
+  await session.startTransaction()
 
   try {
-    const newUser = await UserModel.create([userData], { session });
+    const newUser = await UserModel.create([userData], { session })
 
     if (!newUser.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user')
     }
 
-    studentData.id = newUser[0].id;
-    studentData.user = newUser[0]._id;
+    studentData.id = newUser[0].id
+    studentData.user = newUser[0]._id
 
     // create student record
-    const newStudent = await StudentModel.create([studentData], { session });
+    const newStudent = await StudentModel.create([studentData], { session })
 
     if (!newStudent) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student')
     }
 
-    await session.commitTransaction();
-    await session.endSession();
-    return newStudent[0];
+    await session.commitTransaction()
+    await session.endSession()
+    return newStudent[0]
   } catch (err: any) {
-    await session.abortTransaction();
-    await session.endSession();
-    throw new Error(err);
+    await session.abortTransaction()
+    await session.endSession()
+    throw new Error(err)
   }
-};
+}
 
 const createFacultyIntoDb = async (
   userData: Partial<TUser>,
   facultyData: TFaculty,
 ) => {
-  const session = await mongoose.startSession();
+  const session = await mongoose.startSession()
 
-  await session.startTransaction();
+  await session.startTransaction()
 
   try {
-    const newUser = await UserModel.create([userData], { session });
+    const newUser = await UserModel.create([userData], { session })
 
     if (!newUser.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user')
     }
 
-    facultyData.id = newUser[0].id;
-    facultyData.user = newUser[0]._id;
+    facultyData.id = newUser[0].id
+    facultyData.user = newUser[0]._id
 
     // create student record
-    const newFaculty = await FacultyModel.create([facultyData], { session });
+    const newFaculty = await FacultyModel.create([facultyData], { session })
 
     if (!newFaculty) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create Faculty');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create Faculty')
     }
 
-    await session.commitTransaction();
-    await session.endSession();
-    return newFaculty[0];
+    await session.commitTransaction()
+    await session.endSession()
+    return newFaculty[0]
   } catch (err: any) {
-    await session.abortTransaction();
-    await session.endSession();
-    throw new Error(err);
+    await session.abortTransaction()
+    await session.endSession()
+    throw new Error(err)
   }
-};
+}
+const createAdminIntoDb = async (
+  userData: Partial<TUser>,
+  adminData: TAdmin,
+) => {
+  const session = await mongoose.startSession()
+
+  await session.startTransaction()
+
+  try {
+    const newUser = await UserModel.create([userData], { session })
+
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user')
+    }
+
+    adminData.id = newUser[0].id
+    adminData.user = newUser[0]._id
+
+    // create student record
+    const newAdmin = await AdminModel.create([adminData], { session })
+
+    if (!newAdmin) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create Admin')
+    }
+
+    await session.commitTransaction()
+    await session.endSession()
+    return newAdmin[0]
+  } catch (err: any) {
+    await session.abortTransaction()
+    await session.endSession()
+    throw new Error(err)
+  }
+}
 
 export const userService = {
   createStudentIntoDb,
   createFacultyIntoDb,
-};
+  createAdminIntoDb,
+}

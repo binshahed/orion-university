@@ -3,7 +3,11 @@ import { TUser } from './user.interface';
 import config from '../../config';
 import catchAsync from '../../../utils/catchAsync';
 import { academicSemesterService } from '../academicSemester/academicSemester.service';
-import { generateFacultyId, generateStudentId } from './user.utils';
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from './user.utils';
 import httpStatus from 'http-status';
 import sendResponse from '../../../utils/sendResponse';
 import { academicDepartmentService } from '../academicDepartment/academicDepartment.service';
@@ -80,8 +84,38 @@ const createFaculty = catchAsync(async (req, res) => {
     data: newFaculty,
   });
 });
+const createAdmin = catchAsync(async (req, res) => {
+  const { password, adminData } = req.body;
+
+  const user: Partial<TUser> = {};
+
+  // if password not given use default password
+  user.password = password || config.defaultPassword;
+  user.role = 'admin';
+
+  // check academicDepartment exists
+  // const academicDepartment =
+  //   await academicDepartmentService.getAcademicDepartmentById(
+  //     facultyData.academicDepartment,
+  //   );
+  // if (!academicDepartment) {
+  //   throw new AppError(httpStatus.NOT_FOUND, 'Academic department not found');
+  // }
+
+  user.id = await generateAdminId();
+
+  const newAdmin = await userService.createAdminIntoDb(user, adminData);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admin created successfully',
+    data: newAdmin,
+  });
+});
 
 export const userController = {
   createUser,
   createFaculty,
+  createAdmin,
 };

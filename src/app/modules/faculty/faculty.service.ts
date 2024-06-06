@@ -1,14 +1,11 @@
-import mongoose from 'mongoose';
-import { QueryBuilder } from '../../builder/QueryBuilder';
-import {
-  facultyExcludedFields,
-  facultySearchableFields,
-} from './faculty.const';
-import { TFaculty } from './faculty.interface';
-import { FacultyModel } from './faculty.model';
-import AppError from '../../errors/AppError';
-import httpStatus from 'http-status';
-import { UserModel } from '../user/user.model';
+import mongoose from 'mongoose'
+import { QueryBuilder } from '../../builder/QueryBuilder'
+import { facultyExcludedFields, facultySearchableFields } from './faculty.const'
+import { TFaculty } from './faculty.interface'
+import { FacultyModel } from './faculty.model'
+import AppError from '../../errors/AppError'
+import httpStatus from 'http-status'
+import { UserModel } from '../user/user.model'
 
 const getFaculties = (query: Record<string, unknown>) => {
   const facultyQuery = new QueryBuilder(
@@ -19,31 +16,31 @@ const getFaculties = (query: Record<string, unknown>) => {
     .filter(facultyExcludedFields)
     .sort()
     .paginate()
-    .fields();
+    .fields()
 
-  return facultyQuery.modelQuery.exec();
-};
+  return facultyQuery.modelQuery.exec()
+}
 
 const getFacultyById = async (id: string) => {
   const faculty = await FacultyModel.findOne({ id }).populate(
     'academicDepartment',
-  );
+  )
 
-  return faculty;
-};
+  return faculty
+}
 
 const updateFacultyById = async (id: string, faculty: Partial<TFaculty>) => {
   // Destructure the name field from the rest of the faculty data
-  const { name, ...remainingFacultyData } = faculty;
+  const { name, ...remainingFacultyData } = faculty
   // Create a new object to hold the modified data
   const modifiedData: Record<string, unknown> = {
     ...remainingFacultyData,
-  };
+  }
 
   // If name is provided and it contains keys, flatten it
   if (name && Object.keys(name).length) {
     for (const [key, value] of Object.entries(name)) {
-      modifiedData[`name.${key}`] = value;
+      modifiedData[`name.${key}`] = value
     }
   }
 
@@ -52,52 +49,52 @@ const updateFacultyById = async (id: string, faculty: Partial<TFaculty>) => {
     { id: id },
     { $set: modifiedData },
     { new: true, runValidators: true },
-  );
+  )
 
-  return updatedFaculty;
-};
+  return updatedFaculty
+}
 
 const deleteFacultyById = async (id: string) => {
-  const session = await mongoose.startSession();
+  const session = await mongoose.startSession()
   try {
-    await session.startTransaction();
-    const faculty = await FacultyModel.findOne({ id });
+    await session.startTransaction()
+    const faculty = await FacultyModel.findOne({ id })
 
     if (!faculty || faculty.isDeleted) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Faculty not found');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Faculty not found')
     }
 
     const deletedFaculty = await FacultyModel.findOneAndUpdate(
       { id },
       { isDeleted: true },
       { new: true, session },
-    );
+    )
 
     if (!deletedFaculty) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Filed to delete faculty');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Filed to delete faculty')
     }
 
     const deletedUser = await UserModel.findOneAndUpdate(
       { id },
       { isDeleted: true },
       { new: true, session },
-    );
+    )
 
     if (!deletedUser) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Filed to delete student');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Filed to delete student')
     }
 
-    await session.commitTransaction();
+    await session.commitTransaction()
   } catch (err) {
-    await session.abortTransaction();
+    await session.abortTransaction()
   } finally {
-    await session.endSession();
+    await session.endSession()
   }
-};
+}
 
 export const facultyService = {
   getFaculties,
   getFacultyById,
   updateFacultyById,
   deleteFacultyById,
-};
+}

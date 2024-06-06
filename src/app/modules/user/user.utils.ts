@@ -60,3 +60,19 @@ export const generateFacultyId = async () => {
 
   return currentId;
 };
+
+export const generateAdminId = async () => {
+  let currentId = (0).toString();
+
+  const lastAdminId = await findPreviousId('admin');
+
+  const lastAdminCode = lastAdminId?.substring(2);
+
+  if (lastAdminId) {
+    currentId = `A-${(Number(lastAdminCode) + 1).toString().padStart(4, '0')}`;
+  } else {
+    currentId = `A-0001`;
+  }
+
+  return currentId;
+};
