@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 const nameSchema = z.object({
   firstName: z.string().nonempty('First name is required'),
   middleName: z.string().optional(),
   lastName: z.string().nonempty('Last name is required'),
-});
+})
 
 const facultyValidationSchema = z.object({
   body: z.object({
@@ -32,7 +32,7 @@ const facultyValidationSchema = z.object({
       isDeleted: z.boolean().optional().default(false),
     }),
   }),
-});
+})
 
 const updateFacultyValidationSchema = z.object({
   body: z
@@ -64,9 +64,9 @@ const updateFacultyValidationSchema = z.object({
       isDeleted: z.boolean().optional(),
     })
     .strict(),
-});
+})
 
 export const facultyValidation = {
   facultyValidationSchema,
   updateFacultyValidationSchema,
-};
+}
