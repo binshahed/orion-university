@@ -5,21 +5,21 @@ import { courseService } from './offeredCourse.service'
 import { TOfferedCourse } from './offeredCourse.interface'
 import AppError from '../../errors/AppError'
 
-const createCourse = catchAsync(async (req, res) => {
+const createOfferedCourse = catchAsync(async (req, res) => {
   const course: TOfferedCourse = req.body
 
-  const newCourse = await courseService.createCourse(course)
+  const result = await courseService.createOfferedCourse(course)
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
     message: 'Course created successfully!',
-    data: newCourse,
+    data: result,
   })
 })
 
-const getCourses = catchAsync(async (req, res) => {
-  const courses = await courseService.getCourses(req.query)
+const getOfferedCourses = catchAsync(async (req, res) => {
+  const courses = await courseService.getOfferedCourse(req.query)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -29,9 +29,9 @@ const getCourses = catchAsync(async (req, res) => {
   })
 })
 
-const getCourseById = catchAsync(async (req, res) => {
+const getOfferedCourseById = catchAsync(async (req, res) => {
   const courseId: string = req.params.courseId
-  const course = await courseService.getCourseById(courseId)
+  const course = await courseService.getOfferedCourseById(courseId)
   if (!course) {
     throw new AppError(httpStatus.NOT_FOUND, 'Course not found')
   }
@@ -44,10 +44,13 @@ const getCourseById = catchAsync(async (req, res) => {
   })
 })
 
-const updateCourseById = catchAsync(async (req, res) => {
+const updateOfferedCourseById = catchAsync(async (req, res) => {
   const courseId: string = req.params.courseId
   const course: Partial<TOfferedCourse> = req.body
-  const updatedCourse = await courseService.updateCourseById(courseId, course)
+  const updatedCourse = await courseService.updateOfferedCourseById(
+    courseId,
+    course,
+  )
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -57,9 +60,9 @@ const updateCourseById = catchAsync(async (req, res) => {
   })
 })
 
-const deleteCourseById = catchAsync(async (req, res) => {
+const deleteOfferedCourseById = catchAsync(async (req, res) => {
   const courseId: string = req.params.courseId
-  const course = await courseService.deleteCourseById(courseId)
+  const course = await courseService.deleteOfferedCourseById(courseId)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -70,9 +73,9 @@ const deleteCourseById = catchAsync(async (req, res) => {
 })
 
 export const offeredCourseController = {
-  createCourse,
-  getCourses,
-  getCourseById,
-  updateCourseById,
-  deleteCourseById,
+  createOfferedCourse,
+  getOfferedCourses,
+  getOfferedCourseById,
+  updateOfferedCourseById,
+  deleteOfferedCourseById,
 }

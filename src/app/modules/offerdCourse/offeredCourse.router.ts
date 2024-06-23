@@ -8,19 +8,19 @@ const router = Router()
 
 router
   .route('/')
-  .get(offeredCourseController.getCourses)
+  .get(offeredCourseController.getOfferedCourses)
   .post(
     validateRequest(offeredCourseValidation.createOfferedCourseSchema),
-    offeredCourseController.createCourse,
+    offeredCourseController.createOfferedCourse,
   )
 
 router
   .route('/:courseId')
-  .get(offeredCourseController.getCourseById)
+  .get(offeredCourseController.getOfferedCourseById)
   .patch(
     validateRequest(offeredCourseValidation.updateOfferedCourseSchema),
-    offeredCourseController.updateCourseById,
+    offeredCourseController.updateOfferedCourseById,
   )
-  .delete(offeredCourseController.deleteCourseById)
+  .delete(offeredCourseController.deleteOfferedCourseById)
 
 export const offeredCourseRouter = router
