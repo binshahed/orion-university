@@ -7,6 +7,8 @@ import { academicDepartmentRouter } from '../modules/academicDepartment/academic
 import { facultyRouter } from '../modules/faculty/faculty.router'
 import { adminRouter } from '../modules/admin/admin.router'
 import { courseRouter } from '../modules/course/course.router'
+import { semesterRegistrationRouter } from '../modules/semesterRegistration/semesterRegistration.router'
+import { offeredCourseRouter } from '../modules/offerdCourse/offeredCourse.router'
 
 const modulesRouters = [
   {
@@ -40,6 +42,14 @@ const modulesRouters = [
   {
     path: '/api/v1/academic-department',
     route: academicDepartmentRouter,
+  },
+  {
+    path: '/api/v1/semester-registration',
+    route: semesterRegistrationRouter,
+  },
+  {
+    path: '/api/v1/offered-course',
+    route: offeredCourseRouter,
   },
 ]
 

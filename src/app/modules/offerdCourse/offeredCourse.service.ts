@@ -1,0 +1,99 @@
+import { QueryBuilder } from '../../builder/QueryBuilder'
+import {
+  courseExcludedFields,
+  courseSearchableFields,
+} from './offeredCourse.const'
+import { TOfferedCourse } from './offeredCourse.interface'
+import { CourseModel } from './offeredCourse.model'
+import AppError from '../../errors/AppError'
+import httpStatus from 'http-status'
+
+const createCourse = async (course: TOfferedCourse) => {
+  const newCourse = await CourseModel.create(course)
+  return newCourse
+}
+
+const getCourses = async (query: Record<string, unknown>) => {
+  const courseQuery = new QueryBuilder(
+    CourseModel.find().populate({
+      path: 'prerequisiteCourses.course',
+      select: '-prerequisiteCourses -__v',
+    }),
+    query,
+  )
+    .search(courseSearchableFields)
+    .filter(courseExcludedFields)
+    .sort()
+    .paginate()
+    .fields()
+
+  return courseQuery.modelQuery.exec()
+}
+
+const getCourseById = async (id: string) => {
+  const course = await CourseModel.findById(id)
+  if (!course) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Course not found')
+  }
+  return course
+}
+
+const updateCourseById = async (
+  id: string,
+  updatedData: Partial<TOfferedCourse>,
+) => {
+  const { prerequisiteCourses, ...remainingField } = updatedData
+
+  const updatedCourse = await CourseModel.findByIdAndUpdate(
+    id,
+    { $set: remainingField },
+    { new: true, runValidators: true },
+  )
+  if (!updatedCourse) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Course not found')
+  }
+
+  if (prerequisiteCourses && prerequisiteCourses.length > 0) {
+    const deletedPrerequisiteCourseIds = prerequisiteCourses
+      .filter((el) => el.course && el.isDeleted)
+      .map((el) => el.course)
+
+    await CourseModel.findByIdAndUpdate(id, {
+      $pull: {
+        prerequisiteCourses: { course: { $in: deletedPrerequisiteCourseIds } },
+      },
+    })
+
+    const addPrerequisiteCourseIds = prerequisiteCourses
+      .filter((el) => el.course && !el.isDeleted)
+      .map((el) => el)
+
+    await CourseModel.findByIdAndUpdate(id, {
+      $addToSet: { prerequisiteCourses: { $each: addPrerequisiteCourseIds } },
+    })
+  }
+
+  const result = await CourseModel.findById(id)
+
+  return result
+}
+
+const deleteCourseById = async (id: string) => {
+  const deletedCourse = await CourseModel.findOneAndUpdate(
+    { id },
+    { isDeleted: true },
+    { new: true },
+  )
+  if (!deletedCourse) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Course not found')
+  }
+  return deletedCourse
+}
+
+export const courseService = {
+  createCourse,
+  getCourses,
+  getCourseById,
+  updateCourseById,
+  deleteCourseById,
+}
