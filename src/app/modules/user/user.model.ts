@@ -1,9 +1,9 @@
-import { Schema, model } from 'mongoose';
-import { TUser } from './user.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
+import { Schema, model } from 'mongoose'
+import { TUser, TUserModel } from './user.interface'
+import bcrypt from 'bcrypt'
+import config from '../../config'
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, TUserModel>(
   {
     id: { type: String, unique: true, required: true },
     password: { type: String },
@@ -19,25 +19,39 @@ const userSchema = new Schema<TUser>(
   {
     timestamps: true,
   },
-);
+)
 
-userSchema.index({ id: 1 }, { unique: true });
+userSchema.index({ id: 1 }, { unique: true })
 
 userSchema.pre('save', async function (next) {
-  const user = this as TUser;
+  const user = this as TUser
 
   // hash password
   if (user.password) {
     // hash password
-    user.password = await bcrypt.hash(user.password, Number(config.saltRound));
+    user.password = await bcrypt.hash(user.password, Number(config.saltRound))
   }
-  next();
-});
+  next()
+})
 
 userSchema.post('save', function (doc, next) {
-  const user = doc as TUser;
-  user.password = '';
-  next();
-});
+  const user = doc as TUser
+  user.password = ''
+  next()
+})
 
-export const UserModel = model<TUser>('User', userSchema);
+userSchema.statics.isUserExistsByCustomId = async function (id: string) {
+  return await UserModel.findOne({ id })
+}
+userSchema.statics.isUserExistsByCustomId = async function (id: string) {
+  return await UserModel.findOne({ id })
+}
+
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassword: string,
+  hashedPassword: string,
+) {
+  return await bcrypt.compare(plainTextPassword, hashedPassword)
+}
+
+export const UserModel = model<TUser, TUserModel>('User', userSchema)

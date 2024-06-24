@@ -9,6 +9,7 @@ import { adminRouter } from '../modules/admin/admin.router'
 import { courseRouter } from '../modules/course/course.router'
 import { semesterRegistrationRouter } from '../modules/semesterRegistration/semesterRegistration.router'
 import { offeredCourseRouter } from '../modules/offerdCourse/offeredCourse.router'
+import { authRouter } from '../modules/auth/auth.route'
 
 const modulesRouters = [
   {
@@ -50,6 +51,10 @@ const modulesRouters = [
   {
     path: '/api/v1/offered-course',
     route: offeredCourseRouter,
+  },
+  {
+    path: '/api/v1/auth',
+    route: authRouter,
   },
 ]
 

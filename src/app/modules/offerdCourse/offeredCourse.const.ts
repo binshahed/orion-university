@@ -1,6 +1,4 @@
-import { TDaysOfWeek } from './offeredCourse.interface'
-
-export const DaysOfWeek: TDaysOfWeek[] = [
+export const DaysOfWeek = [
   'Sun',
   'Mon',
   'Tue',

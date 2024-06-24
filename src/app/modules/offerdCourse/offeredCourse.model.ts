@@ -42,14 +42,16 @@ const offeredCourseSchema = new Schema<TOfferedCourse>({
     type: Number,
     required: [true, 'Section is required'],
   },
-  days: {
-    type: String,
-    enum: {
-      values: DaysOfWeek,
-      message: '{VALUE} is not a valid day',
+  days: [
+    {
+      type: String,
+      enum: {
+        values: DaysOfWeek,
+        message: '{VALUE} is not a valid day',
+      },
+      required: [true, 'Days are required'],
     },
-    required: [true, 'Days are required'],
-  },
+  ],
   startTime: {
     type: String,
     required: [true, 'Start time is required'],

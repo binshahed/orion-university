@@ -3,6 +3,7 @@ import { offeredCourseController } from './offeredCourse.controller'
 
 import validateRequest from '../../middlewares/validateRequest'
 import { offeredCourseValidation } from './offeredCourse.validation'
+import auth from './../../middlewares/auth'
 
 const router = Router()
 
@@ -10,12 +11,13 @@ router
   .route('/')
   .get(offeredCourseController.getOfferedCourses)
   .post(
+    auth(),
     validateRequest(offeredCourseValidation.createOfferedCourseSchema),
     offeredCourseController.createOfferedCourse,
   )
 
 router
-  .route('/:courseId')
+  .route('/:offeredCourseId')
   .get(offeredCourseController.getOfferedCourseById)
   .patch(
     validateRequest(offeredCourseValidation.updateOfferedCourseSchema),
