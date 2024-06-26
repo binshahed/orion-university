@@ -20,7 +20,7 @@ const auth = (...allowedRoles: TUserRole[]) => {
     // Verify the token and decode the payload
     const decodedToken = jwt.verify(
       token,
-      config.jwtAccessSecretKey as string,
+      config.jwtRefreshSecretKey as string,
     ) as JwtPayload
     const { role, userId } = decodedToken.data
     const { iat } = decodedToken
@@ -46,8 +46,7 @@ const auth = (...allowedRoles: TUserRole[]) => {
       throw new AppError(httpStatus.UNAUTHORIZED, 'This user is blocked')
     }
 
-    //
-
+    // check if password change invalidated token
     if (
       user.passwordChangeAt &&
       UserModel.isJwtIssuedBeforePasswordChanged(
