@@ -20,7 +20,6 @@ const createOfferedCourse = catchAsync(async (req, res) => {
 
 const getOfferedCourses = catchAsync(async (req, res) => {
   const courses = await offeredCourseService.getOfferedCourse(req.query)
-  console.log(req.cookies)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

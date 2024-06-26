@@ -48,9 +48,9 @@ export const createUser = catchAsync(async (req, res) => {
   const newStudent = await userService.createStudentIntoDb(user, studentData)
 
   sendResponse(res, {
-    statusCode: httpStatus.OK,
     success: true,
-    message: 'Student created successfully',
+    statusCode: httpStatus.OK,
+    message: 'User registered successfully',
     data: newStudent,
   })
 })
