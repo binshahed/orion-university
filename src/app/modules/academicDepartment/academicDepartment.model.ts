@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import { TAcademicDepartment } from './academicDepartment.interface';
+import { Schema, model } from 'mongoose'
+import { TAcademicDepartment } from './academicDepartment.interface'
 
 const academicDepartmentSchema = new Schema<TAcademicDepartment>(
   {
@@ -17,9 +17,9 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
   {
     timestamps: true,
   },
-);
+)
 
 export const AcademicDepartmentModel = model<TAcademicDepartment>(
   'AcademicDepartment',
   academicDepartmentSchema,
-);
+)

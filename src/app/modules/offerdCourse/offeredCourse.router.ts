@@ -4,14 +4,14 @@ import { offeredCourseController } from './offeredCourse.controller'
 import validateRequest from '../../middlewares/validateRequest'
 import { offeredCourseValidation } from './offeredCourse.validation'
 import auth from './../../middlewares/auth'
+import { USER_ROLE } from '../user/user.const'
 
 const router = Router()
 
 router
   .route('/')
-  .get(offeredCourseController.getOfferedCourses)
+  .get(auth(USER_ROLE.admin), offeredCourseController.getOfferedCourses)
   .post(
-    auth(),
     validateRequest(offeredCourseValidation.createOfferedCourseSchema),
     offeredCourseController.createOfferedCourse,
   )

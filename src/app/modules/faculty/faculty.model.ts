@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import { TFaculty } from './faculty.interface';
+import { Schema, model } from 'mongoose'
+import { TFaculty } from './faculty.interface'
 
 const FacultySchema = new Schema<TFaculty>({
   id: { type: String, required: [true, 'ID is required'], unique: true },
@@ -45,6 +45,6 @@ const FacultySchema = new Schema<TFaculty>({
     required: [true, 'Academic department reference is required'],
   },
   isDeleted: { type: Boolean, default: false },
-});
+})
 
-export const FacultyModel = model<TFaculty>('Faculty', FacultySchema);
+export const FacultyModel = model<TFaculty>('Faculty', FacultySchema)

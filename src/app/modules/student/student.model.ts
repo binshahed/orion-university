@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import { TStudent } from './student.interface';
+import { Schema, model } from 'mongoose'
+import { TStudent } from './student.interface'
 
 const StudentSchema = new Schema<TStudent>(
   {
@@ -99,15 +99,15 @@ const StudentSchema = new Schema<TStudent>(
   {
     timestamps: true,
   },
-);
+)
 
 // Middleware to prevent editing the user field
 StudentSchema.pre('save', function (next) {
   if (!this.isNew) {
     // If the document is not new, do not allow the user field to be modified
-    this.markModified('user');
+    this.markModified('user')
   }
-  next();
-});
+  next()
+})
 
-export const StudentModel = model<TStudent>('Student', StudentSchema);
+export const StudentModel = model<TStudent>('Student', StudentSchema)

@@ -3,7 +3,7 @@ export const studentSearchableFields: string[] = [
   'name.firstName',
   'name.lastName',
   'presentAddress',
-];
+]
 
 export const studentExcludedFields = [
   'searchTerm',
@@ -11,4 +11,4 @@ export const studentExcludedFields = [
   'limit',
   'page',
   'fields',
-];
+]

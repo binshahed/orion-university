@@ -3,7 +3,7 @@ export const facultySearchableFields: string[] = [
   'name.firstName',
   'name.lastName',
   'presentAddress',
-];
+]
 
 export const facultyExcludedFields = [
   'searchTerm',
@@ -11,4 +11,4 @@ export const facultyExcludedFields = [
   'limit',
   'page',
   'fields',
-];
+]

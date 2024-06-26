@@ -1,9 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { Model } from 'mongoose'
+import { USER_ROLE } from './user.const'
 
 export interface TUser {
   id: string
   password?: string | undefined
+  passwordChangeAt?: Date
   needsPasswordChange?: boolean
   role?: 'student' | 'faculty' | 'admin'
   status?: 'in-progress' | 'blocked'
@@ -22,4 +24,10 @@ export interface TUserModel extends Model<TUser> {
     textPassword: string,
     hashedPassword: string,
   ): Promise<boolean>
+  isJwtIssuedBeforePasswordChanged(
+    passwordChangeTime: Date,
+    jwtIssuedTimeStamp: number,
+  ): boolean
 }
+
+export type TUserRole = keyof typeof USER_ROLE

@@ -1,5 +1,5 @@
-import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
-import { UserModel } from './user.model';
+import { TAcademicSemester } from '../academicSemester/academicSemester.interface'
+import { UserModel } from './user.model'
 
 const findPreviousId = async (role: string) => {
   const lastStudent = await UserModel.findOne(
@@ -12,67 +12,67 @@ const findPreviousId = async (role: string) => {
     },
   )
     .sort({ createdAt: -1 })
-    .lean();
+    .lean()
 
-  return lastStudent?.id ? lastStudent.id : undefined;
-};
+  return lastStudent?.id ? lastStudent.id : undefined
+}
 // 2030 02 0001
 
 // generate student id
 export const generateStudentId = async (
   semesterData: TAcademicSemester,
 ): Promise<string> => {
-  let currentId = (0).toString();
-  const lastStudentId = await findPreviousId('student');
+  let currentId = (0).toString()
+  const lastStudentId = await findPreviousId('student')
 
-  const lastStudentCode = lastStudentId?.substring(4, 6);
-  const lastStudentYear = lastStudentId?.substring(0, 4);
-  const currentStudentCode = semesterData.code;
-  const currentStudentYear = semesterData.year;
+  const lastStudentCode = lastStudentId?.substring(4, 6)
+  const lastStudentYear = lastStudentId?.substring(0, 4)
+  const currentStudentCode = semesterData.code
+  const currentStudentYear = semesterData.year
 
   if (
     lastStudentId &&
     lastStudentCode === currentStudentCode &&
     lastStudentYear === currentStudentYear
   ) {
-    currentId = lastStudentId.substring(6);
+    currentId = lastStudentId.substring(6)
   }
 
-  let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+  let incrementId = (Number(currentId) + 1).toString().padStart(4, '0')
 
-  incrementId = `${semesterData.year}${semesterData.code}${incrementId}`;
+  incrementId = `${semesterData.year}${semesterData.code}${incrementId}`
 
-  return incrementId;
-};
+  return incrementId
+}
 
 export const generateFacultyId = async () => {
-  let currentId = (0).toString();
+  let currentId = (0).toString()
 
-  const lastFacultyId = await findPreviousId('faculty');
+  const lastFacultyId = await findPreviousId('faculty')
 
-  const lastFacultyCode = lastFacultyId?.substring(2);
+  const lastFacultyCode = lastFacultyId?.substring(2)
 
   if (lastFacultyId) {
-    currentId = `F-${(Number(lastFacultyCode) + 1).toString().padStart(4, '0')}`;
+    currentId = `F-${(Number(lastFacultyCode) + 1).toString().padStart(4, '0')}`
   } else {
-    currentId = `F-0001`;
+    currentId = `F-0001`
   }
 
-  return currentId;
-};
+  return currentId
+}
 
 export const generateAdminId = async () => {
-  let currentId = (0).toString();
+  let currentId = (0).toString()
 
-  const lastAdminId = await findPreviousId('admin');
+  const lastAdminId = await findPreviousId('admin')
 
-  const lastAdminCode = lastAdminId?.substring(2);
+  const lastAdminCode = lastAdminId?.substring(2)
 
   if (lastAdminId) {
-    currentId = `A-${(Number(lastAdminCode) + 1).toString().padStart(4, '0')}`;
+    currentId = `A-${(Number(lastAdminCode) + 1).toString().padStart(4, '0')}`
   } else {
-    currentId = `A-0001`;
+    currentId = `A-0001`
   }
 
-  return currentId;
-};
+  return currentId
+}

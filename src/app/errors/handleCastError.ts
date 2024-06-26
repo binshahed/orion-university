@@ -1,8 +1,8 @@
-import { CastError } from 'mongoose';
-import { TGenericErrorResponse } from '../interface/error.interface';
+import { CastError } from 'mongoose'
+import { TGenericErrorResponse } from '../interface/error.interface'
 
 const handleCastError = (err: CastError): TGenericErrorResponse => {
-  const statusCode = 400;
+  const statusCode = 400
 
   return {
     statusCode,
@@ -13,7 +13,7 @@ const handleCastError = (err: CastError): TGenericErrorResponse => {
         message: err.message,
       },
     ],
-  };
-};
+  }
+}
 
-export default handleCastError;
+export default handleCastError

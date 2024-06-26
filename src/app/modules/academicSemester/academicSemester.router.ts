@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import { academicSemesterController } from './academicSemester.controller';
-import validateRequest from '../../middlewares/validateRequest';
-import { academicSemesterValidation } from './academicSemester.validation';
+import { Router } from 'express'
+import { academicSemesterController } from './academicSemester.controller'
+import validateRequest from '../../middlewares/validateRequest'
+import { academicSemesterValidation } from './academicSemester.validation'
 
-const router = Router();
+const router = Router()
 
 router
   .route('/')
@@ -11,7 +11,7 @@ router
   .post(
     validateRequest(academicSemesterValidation.createSemesterValidation),
     academicSemesterController.createAcademicSemester,
-  );
+  )
 
 router
   .route('/:semesterId')
@@ -19,6 +19,6 @@ router
     validateRequest(academicSemesterValidation.updateSemesterValidation),
     academicSemesterController.updateAcademicSemesterById,
   )
-  .get(academicSemesterController.getAcademicSemesterById);
+  .get(academicSemesterController.getAcademicSemesterById)
 
-export const academicSemesterRouter = router;
+export const academicSemesterRouter = router

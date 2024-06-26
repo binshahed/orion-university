@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const academicFacultyValidation = z.object({
   body: z.object({
@@ -7,4 +7,4 @@ export const academicFacultyValidation = z.object({
     }),
     academicFaculty: z.string(),
   }),
-});
+})

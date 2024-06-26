@@ -1,12 +1,12 @@
-import { Types } from 'mongoose';
-import { z } from 'zod';
+import { Types } from 'mongoose'
+import { z } from 'zod'
 
 const objectIdValidation = z
   .string()
   .refine((val) => Types.ObjectId.isValid(val), {
     message: 'Invalid ObjectId',
   })
-  .optional();
+  .optional()
 
 const studentValidationSchema = z.object({
   body: z.object({
@@ -65,7 +65,7 @@ const studentValidationSchema = z.object({
       isDeleted: z.boolean().default(false),
     }),
   }),
-});
+})
 
 // Partial schema for updates
 const UpdateStudentValidationSchema = z.object({
@@ -118,9 +118,9 @@ const UpdateStudentValidationSchema = z.object({
       isDeleted: z.boolean().optional(),
     })
     .strict(),
-});
+})
 
 export const StudentValidation = {
   studentValidationSchema,
   UpdateStudentValidationSchema,
-};
+}

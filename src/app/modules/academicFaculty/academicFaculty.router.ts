@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import { academicFacultyController } from './academicFaculty.controller';
-import { academicFacultyValidation } from './academicFaculty.validation';
-import validateRequest from '../../middlewares/validateRequest';
+import { Router } from 'express'
+import { academicFacultyController } from './academicFaculty.controller'
+import { academicFacultyValidation } from './academicFaculty.validation'
+import validateRequest from '../../middlewares/validateRequest'
 
-const router = Router();
+const router = Router()
 
 router
   .route('/')
@@ -11,11 +11,11 @@ router
   .post(
     validateRequest(academicFacultyValidation),
     academicFacultyController.createAcademicFaculty,
-  );
+  )
 
 router
   .route('/:academicFacultyId')
   .patch(academicFacultyController.updateAcademicFaculty)
-  .get(academicFacultyController.getAcademicFacultyById);
+  .get(academicFacultyController.getAcademicFacultyById)
 
-export const academicFacultyRouter = router;
+export const academicFacultyRouter = router

@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import { TAdmin } from './admin.interface';
+import { Schema, model } from 'mongoose'
+import { TAdmin } from './admin.interface'
 
 const AdminSchema = new Schema<TAdmin>({
   id: { type: String, required: [true, 'ID is required'], unique: true },
@@ -41,6 +41,6 @@ const AdminSchema = new Schema<TAdmin>({
   profileImg: { type: String },
 
   isDeleted: { type: Boolean, default: false },
-});
+})
 
-export const AdminModel = model<TAdmin>('Admin', AdminSchema);
+export const AdminModel = model<TAdmin>('Admin', AdminSchema)

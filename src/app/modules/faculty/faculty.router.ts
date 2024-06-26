@@ -1,11 +1,11 @@
-import { Router } from 'express';
-import { facultyController } from './faculty.controller';
-import validateRequest from '../../middlewares/validateRequest';
-import { facultyValidation } from './faculty.validation';
+import { Router } from 'express'
+import { facultyController } from './faculty.controller'
+import validateRequest from '../../middlewares/validateRequest'
+import { facultyValidation } from './faculty.validation'
 
-const router = Router();
+const router = Router()
 
-router.route('/').get(facultyController.getFaculties);
+router.route('/').get(facultyController.getFaculties)
 router
   .route('/:facultyId')
   .get(facultyController.getFacultyById)
@@ -13,6 +13,6 @@ router
     validateRequest(facultyValidation.updateFacultyValidationSchema),
     facultyController.updateFacultyById,
   )
-  .delete(facultyController.deleteFacultyById);
+  .delete(facultyController.deleteFacultyById)
 
-export const facultyRouter = router;
+export const facultyRouter = router

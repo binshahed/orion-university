@@ -1,6 +1,6 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId } from 'mongoose'
 
 export type TAcademicDepartment = {
-  name: string;
-  academicFaculty: ObjectId;
-};
+  name: string
+  academicFaculty: ObjectId
+}

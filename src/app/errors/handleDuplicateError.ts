@@ -3,31 +3,31 @@
 import {
   TErrorSource,
   TGenericErrorResponse,
-} from '../interface/error.interface';
+} from '../interface/error.interface'
 
 const handleDuplicateError = (err: any): TGenericErrorResponse => {
   // Define the regex pattern to match the department name
-  const regex = /\{([^}]+)\}/;
+  const regex = /\{([^}]+)\}/
 
   // Use the match method to extract the department name
-  const match = err.message.match(regex);
+  const match = err.message.match(regex)
 
   // Check if the match is found and extract the department name
-  const departmentName = match ? match[1] : null;
+  const departmentName = match ? match[1] : null
   const errorSource: TErrorSource = [
     {
       path: '',
       message: `${departmentName} is already exists`,
     },
-  ];
+  ]
 
-  const statusCode = 400;
+  const statusCode = 400
 
   return {
     statusCode,
     message: err.message,
     errorSource,
-  };
-};
+  }
+}
 
-export default handleDuplicateError;
+export default handleDuplicateError

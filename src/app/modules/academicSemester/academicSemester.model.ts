@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Schema, UpdateQuery, model } from 'mongoose';
-import { TAcademicSemester } from './academicSemester.interface';
+import { Schema, UpdateQuery, model } from 'mongoose'
+import { TAcademicSemester } from './academicSemester.interface'
 import {
   Months,
   AcademicSemesterCode,
   AcademicSemesterName,
-} from './academicSemester.constant';
-import AppError from '../../errors/AppError';
-import httpStatus from 'http-status';
+} from './academicSemester.constant'
+import AppError from '../../errors/AppError'
+import httpStatus from 'http-status'
 
 const academicSemesterSchema = new Schema<TAcademicSemester>(
   {
@@ -40,57 +40,57 @@ const academicSemesterSchema = new Schema<TAcademicSemester>(
   {
     timestamps: true,
   },
-);
+)
 
 academicSemesterSchema.pre('save', async function (next) {
   try {
     const semester = await AcademicSemesterModel.findOne({
       name: this.name,
       year: this.year,
-    });
+    })
 
     if (semester) {
       throw new AppError(
         httpStatus.NOT_FOUND,
         'Academic Semester Already Exists',
-      );
+      )
     }
-    next();
+    next()
   } catch (error: any) {
-    next(error);
+    next(error)
   }
-});
+})
 
 async function academicSemesterUpdatePreHock(this: any, next: any) {
   try {
-    const update = this.getUpdate() as UpdateQuery<TAcademicSemester>;
+    const update = this.getUpdate() as UpdateQuery<TAcademicSemester>
     if (update) {
-      const { name, year } = update;
+      const { name, year } = update
       if (name && year) {
         const semester = await AcademicSemesterModel.findOne({
           name: name,
           year: year,
-        });
+        })
 
         if (semester) {
           throw new AppError(
             httpStatus.NOT_FOUND,
             'Academic Semester Already Exists',
-          );
+          )
         }
       }
     }
-    next();
+    next()
   } catch (error: any) {
-    next(error);
+    next(error)
   }
 }
 
 // Middleware for updateOne operation
-academicSemesterSchema.pre('updateOne', academicSemesterUpdatePreHock);
-academicSemesterSchema.pre('findOneAndUpdate', academicSemesterUpdatePreHock);
+academicSemesterSchema.pre('updateOne', academicSemesterUpdatePreHock)
+academicSemesterSchema.pre('findOneAndUpdate', academicSemesterUpdatePreHock)
 
 export const AcademicSemesterModel = model<TAcademicSemester>(
   'AcademicSemester',
   academicSemesterSchema,
-);
+)
