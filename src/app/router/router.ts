@@ -1,15 +1,16 @@
 import { Application, Request, Response } from 'express'
-import { StudentRouter } from '../modules/student/student.router'
-import { userRouter } from '../modules/user/user.router'
-import { academicSemesterRouter } from '../modules/academicSemester/academicSemester.router'
-import { academicFacultyRouter } from '../modules/academicFaculty/academicFaculty.router'
-import { academicDepartmentRouter } from '../modules/academicDepartment/academicDepartment.router'
-import { facultyRouter } from '../modules/faculty/faculty.router'
-import { adminRouter } from '../modules/admin/admin.router'
-import { courseRouter } from '../modules/course/course.router'
-import { semesterRegistrationRouter } from '../modules/semesterRegistration/semesterRegistration.router'
-import { offeredCourseRouter } from '../modules/offerdCourse/offeredCourse.router'
-import { authRouter } from '../modules/auth/auth.route'
+import { StudentRouter } from '../modules/student/student.routes'
+import { userRouter } from '../modules/user/user.routes'
+import { academicSemesterRouter } from '../modules/academicSemester/academicSemester.routes'
+import { academicFacultyRouter } from '../modules/academicFaculty/academicFaculty.routes'
+import { academicDepartmentRouter } from '../modules/academicDepartment/academicDepartment.routes'
+import { facultyRouter } from '../modules/faculty/faculty.routes'
+import { adminRouter } from '../modules/admin/admin.routes'
+import { courseRouter } from '../modules/course/course.routes'
+import { semesterRegistrationRouter } from '../modules/semesterRegistration/semesterRegistration.routes'
+import { authRouter } from '../modules/auth/auth.routes'
+import { offeredCourseRouter } from '../modules/offeredCourse/offeredCourse.routes'
+
 
 const modulesRouters = [
   {

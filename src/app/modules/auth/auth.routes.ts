@@ -28,4 +28,19 @@ router
     authController.refreshToken,
   )
 
+router
+  .route('/reset-password')
+  .post(
+    auth(),
+    validateRequest(AuthValidation.resetPasswordValidationSchema),
+    authController.resetPassword,
+  )
+
+router
+  .route('/forget-password')
+  .post(
+    validateRequest(AuthValidation.forgotPasswordValidationSchema),
+    authController.forgotPassword,
+  )
+
 export const authRouter = router

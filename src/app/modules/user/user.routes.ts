@@ -16,7 +16,7 @@ router.post(
   auth(USER_ROLE.admin),
   validateRequest(UserValidation.userValidationSchema),
   validateRequest(StudentValidation.studentValidationSchema),
-  userController.createUser,
+  userController.createStudent,
 )
 
 router.post(

@@ -5,6 +5,7 @@ import { USER_ROLE } from './user.const'
 export interface TUser {
   id: string
   password?: string | undefined
+  email: string
   passwordChangeAt?: Date
   needsPasswordChange?: boolean
   role?: 'student' | 'faculty' | 'admin'
@@ -14,6 +15,7 @@ export interface TUser {
 
 export type TNewUser = {
   password: string
+  email: string
   role: string
   id: string
 }

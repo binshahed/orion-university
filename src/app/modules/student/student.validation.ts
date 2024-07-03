@@ -1,6 +1,8 @@
 import { Types } from 'mongoose'
 import { z } from 'zod'
 
+const dateRegex = /^(19|20)\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/
+
 const objectIdValidation = z
   .string()
   .refine((val) => Types.ObjectId.isValid(val), {
@@ -19,7 +21,18 @@ const studentValidationSchema = z.object({
       gender: z.enum(['male', 'female'], {
         message: 'Gender must be either male or female',
       }),
-      dateOfBirth: z.string({ message: 'Date of birth is required' }),
+      dateOfBirth: z
+        .string({ message: 'Date of birth is required' })
+        .regex(dateRegex)
+        .refine(
+          (date) => {
+            if (!date) return true // allow undefined or null (optional field)
+            return dateRegex.test(date)
+          },
+          {
+            message: 'Date of birth must be in the format YYYY-MM-DD.',
+          },
+        ),
 
       email: z.string().email({ message: 'Invalid email address' }),
       contactNo: z.string({ message: 'Contact number is required' }),
@@ -86,7 +99,19 @@ const UpdateStudentValidationSchema = z.object({
           message: 'Gender must be either male or female',
         })
         .optional(),
-      dateOfBirth: z.string().optional(),
+      dateOfBirth: z
+        .string()
+        .regex(dateRegex)
+        .refine(
+          (date) => {
+            if (!date) return true // allow undefined or null (optional field)
+            return dateRegex.test(date)
+          },
+          {
+            message: 'Date of birth must be in the format YYYY-MM-DD.',
+          },
+        )
+        .optional(),
       email: z.string().email({ message: 'Invalid email address' }).optional(),
       contactNo: z.string().optional(),
       emergencyContactNo: z.string().optional(),

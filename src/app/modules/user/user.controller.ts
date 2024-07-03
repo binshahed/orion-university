@@ -13,7 +13,7 @@ import sendResponse from '../../../utils/sendResponse'
 import { academicDepartmentService } from '../academicDepartment/academicDepartment.service'
 import AppError from '../../errors/AppError'
 
-export const createUser = catchAsync(async (req, res) => {
+export const createStudent = catchAsync(async (req, res) => {
   const { password, studentData } = req.body
 
   const user: Partial<TUser> = {}
@@ -21,6 +21,7 @@ export const createUser = catchAsync(async (req, res) => {
   // if password not given use default password
   user.password = password || config.defaultPassword
   user.role = 'student'
+  user.email = studentData.email
 
   // check academicDepartment exists
   const academicDepartment =
@@ -63,6 +64,7 @@ const createFaculty = catchAsync(async (req, res) => {
   // if password not given use default password
   user.password = password || config.defaultPassword
   user.role = 'faculty'
+  user.email = facultyData.email
 
   // check academicDepartment exists
   const academicDepartment =
@@ -92,6 +94,7 @@ const createAdmin = catchAsync(async (req, res) => {
   // if password not given use default password
   user.password = password || config.defaultPassword
   user.role = 'admin'
+  user.email = adminData.email
 
   // check academicDepartment exists
   // const academicDepartment =
@@ -115,7 +118,7 @@ const createAdmin = catchAsync(async (req, res) => {
 })
 
 export const userController = {
-  createUser,
+  createStudent,
   createFaculty,
   createAdmin,
 }

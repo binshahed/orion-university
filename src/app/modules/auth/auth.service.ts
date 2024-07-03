@@ -7,6 +7,7 @@ import config from '../../config'
 import bcrypt from 'bcrypt'
 import { createToken } from './auth.utils'
 import jwt, { JwtPayload } from 'jsonwebtoken'
+import { sendEmail } from '../../../utils/sendEmail'
 
 const loginUser = async (payload: TUserLogin) => {
   // check if user exists
@@ -176,8 +177,105 @@ const refreshToken = async (token: string) => {
   }
 }
 
+const forgotPassword = async (id: string) => {
+  // Fetch the user's full data using the userId from the token
+  const user = await UserModel.isUserExistsByCustomId(id)
+
+  // check if the user is exist
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'The user does not exist')
+  }
+
+  // Check if the user has been deleted
+  if (user.isDeleted) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'This user has already been deleted',
+    )
+  }
+
+  // Check if the user is blocked
+  if (user.status === 'blocked') {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'This user is blocked')
+  }
+
+  //   generate access token
+  const accessToken = createToken(
+    {
+      userId: user.id,
+      role: user.role as string,
+    },
+    config.jwtAccessSecretKey as string,
+    '10m',
+  )
+
+  if (!accessToken) {
+    throw new AppError(httpStatus.FORBIDDEN, 'Something went wrong')
+  }
+
+  const resetUiLink = `http://localhost:5000?id=${user.id}&token=${accessToken}`
+
+  sendEmail(user.email, resetUiLink)
+
+  return 'Please Check your email to reset your password'
+}
+
+const resetPassword = async (
+  payload: { userId: string; newPassword: string },
+  token: string,
+) => {
+  // check if old password is correct
+
+  const user = await UserModel.isUserExistsByCustomId(payload.userId)
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User Not Found')
+  }
+
+  // Verify the access token and decode the payload
+  const decodedToken = jwt.verify(
+    token,
+    config.jwtAccessSecretKey as string,
+  ) as JwtPayload
+
+  if (!decodedToken) {
+    throw new AppError(httpStatus.FORBIDDEN, 'Token is not Valid')
+  }
+
+  // check if user is deleted
+  if (user.isDeleted) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'This User has already been deleted',
+    )
+  }
+  // check if user blocked
+  if (user?.status === 'blocked') {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'This user is blocked')
+  }
+
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.saltRound),
+  )
+
+  await UserModel.findOneAndUpdate(
+    { id: payload.userId },
+    {
+      password: newHashedPassword,
+      needsPasswordChange: false,
+      passwordChangeAt: new Date(),
+    },
+    { upsert: true },
+  )
+
+  return null
+}
+
 export const authService = {
   loginUser,
   changePassword,
   refreshToken,
+  forgotPassword,
+  resetPassword,
 }
