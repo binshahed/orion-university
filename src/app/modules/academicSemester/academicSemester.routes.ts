@@ -2,12 +2,14 @@ import { Router } from 'express'
 import { academicSemesterController } from './academicSemester.controller'
 import validateRequest from '../../middlewares/validateRequest'
 import { academicSemesterValidation } from './academicSemester.validation'
+import auth from '../../middlewares/auth'
+import { USER_ROLE } from '../user/user.const'
 
 const router = Router()
 
 router
   .route('/')
-  .get(academicSemesterController.getAcademicSemester)
+  .get(auth(USER_ROLE.admin), academicSemesterController.getAcademicSemester)
   .post(
     validateRequest(academicSemesterValidation.createSemesterValidation),
     academicSemesterController.createAcademicSemester,
@@ -19,6 +21,9 @@ router
     validateRequest(academicSemesterValidation.updateSemesterValidation),
     academicSemesterController.updateAcademicSemesterById,
   )
-  .get(academicSemesterController.getAcademicSemesterById)
+  .get(
+    auth(USER_ROLE.admin),
+    academicSemesterController.getAcademicSemesterById,
+  )
 
 export const academicSemesterRouter = router
