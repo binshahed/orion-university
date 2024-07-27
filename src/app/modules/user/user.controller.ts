@@ -117,8 +117,38 @@ const createAdmin = catchAsync(async (req, res) => {
   })
 })
 
+const getMe = catchAsync(async (req, res) => {
+  const user = req.user.data
+
+  const result = await userService.getMe(user)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User retrieved successfully',
+    data: result,
+  })
+})
+
+const changeStatus = catchAsync(async (req, res) => {
+  const { status } = req.body
+
+  const userId = req.params.id
+
+  const updatedUser = await userService.changeStatus(userId, status)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User status changed successfully',
+    data: updatedUser,
+  })
+})
+
 export const userController = {
   createStudent,
   createFaculty,
   createAdmin,
+  changeStatus,
+  getMe,
 }

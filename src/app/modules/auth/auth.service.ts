@@ -5,8 +5,8 @@ import { TPasswordChange, TUserLogin } from './auth.interface'
 
 import config from '../../config'
 import bcrypt from 'bcrypt'
-import { createToken } from './auth.utils'
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import { createToken, verifyToken } from './auth.utils'
+import { JwtPayload } from 'jsonwebtoken'
 import { sendEmail } from '../../../utils/sendEmail'
 
 const loginUser = async (payload: TUserLogin) => {
@@ -123,10 +123,7 @@ const refreshToken = async (token: string) => {
   }
 
   // Verify the access token and decode the payload
-  const decodedToken = jwt.verify(
-    token,
-    config.jwtRefreshSecretKey as string,
-  ) as JwtPayload
+  const decodedToken = verifyToken(token, config.jwtRefreshSecretKey as string)
   const { role, userId } = decodedToken.data
   const { iat } = decodedToken
 
@@ -233,10 +230,7 @@ const resetPassword = async (
   }
 
   // Verify the access token and decode the payload
-  const decodedToken = jwt.verify(
-    token,
-    config.jwtAccessSecretKey as string,
-  ) as JwtPayload
+  const decodedToken = verifyToken(token, config.jwtAccessSecretKey as string)
 
   if (!decodedToken) {
     throw new AppError(httpStatus.FORBIDDEN, 'Token is not Valid')

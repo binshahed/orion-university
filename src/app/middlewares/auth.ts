@@ -2,10 +2,11 @@ import { NextFunction, Request, Response } from 'express'
 import catchAsync from '../../utils/catchAsync'
 import AppError from '../errors/AppError'
 import httpStatus from 'http-status'
-import jwt, { JwtPayload } from 'jsonwebtoken'
+
 import config from '../config'
 import { TUserRole } from '../modules/user/user.interface'
 import { UserModel } from '../modules/user/user.model'
+import { verifyToken } from '../modules/auth/auth.utils'
 
 // Middleware for authorization based on user roles
 const auth = (...allowedRoles: TUserRole[]) => {
@@ -20,10 +21,7 @@ const auth = (...allowedRoles: TUserRole[]) => {
     let decodedToken
     // Verify the token and decode the payload
     try {
-      decodedToken = jwt.verify(
-        token,
-        config.jwtAccessSecretKey as string,
-      ) as JwtPayload
+      decodedToken = verifyToken(token, config.jwtAccessSecretKey as string)
     } catch (err) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not Authorized')
     }

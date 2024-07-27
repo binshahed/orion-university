@@ -28,9 +28,23 @@ router.post(
 )
 router.post(
   '/create-admin',
+  // auth(USER_ROLE.admin),
   validateRequest(UserValidation.userValidationSchema),
   validateRequest(adminValidation.adminValidationSchema),
   userController.createAdmin,
+)
+
+router.post(
+  '/change-status/:id',
+  auth(USER_ROLE.admin),
+  validateRequest(UserValidation.changeStatusValidationSchema),
+  userController.changeStatus,
+)
+
+router.get(
+  '/me',
+  auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  userController.getMe,
 )
 
 export const userRouter = router
