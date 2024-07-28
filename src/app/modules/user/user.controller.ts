@@ -46,7 +46,11 @@ export const createStudent = catchAsync(async (req, res) => {
   user.id = await generateStudentId(academicSemester)
 
   // create new user
-  const newStudent = await userService.createStudentIntoDb(user, studentData)
+  const newStudent = await userService.createStudentIntoDb(
+    req.file,
+    user,
+    studentData,
+  )
 
   sendResponse(res, {
     success: true,
@@ -77,7 +81,11 @@ const createFaculty = catchAsync(async (req, res) => {
 
   user.id = await generateFacultyId()
 
-  const newFaculty = await userService.createFacultyIntoDb(user, facultyData)
+  const newFaculty = await userService.createFacultyIntoDb(
+    req.file,
+    user,
+    facultyData,
+  )
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -107,7 +115,11 @@ const createAdmin = catchAsync(async (req, res) => {
 
   user.id = await generateAdminId()
 
-  const newAdmin = await userService.createAdminIntoDb(user, adminData)
+  const newAdmin = await userService.createAdminIntoDb(
+    req.file,
+    user,
+    adminData,
+  )
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

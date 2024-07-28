@@ -11,8 +11,10 @@ import { TFaculty } from '../faculty/faculty.interface'
 import { StudentModel } from '../student/student.model'
 import { TAdmin } from '../admin/admin.interface'
 import { AdminModel } from '../admin/admin.model'
+import { sendImageToCloudinary } from '../../../utils/sentImageToCloudinary'
 
 const createStudentIntoDb = async (
+  file: any,
   userData: Partial<TUser>,
   studentData: TStudent,
 ) => {
@@ -21,6 +23,12 @@ const createStudentIntoDb = async (
   await session.startTransaction()
 
   try {
+    const imageName = `${userData.id}_${studentData.name.lastName}`
+
+    const imageUrl = await sendImageToCloudinary(imageName, file.path)
+
+    studentData.profileImage = imageUrl?.secure_url
+
     const newUser = await UserModel.create([userData], { session })
 
     if (!newUser.length) {
@@ -48,6 +56,7 @@ const createStudentIntoDb = async (
 }
 
 const createFacultyIntoDb = async (
+  file: any,
   userData: Partial<TUser>,
   facultyData: TFaculty,
 ) => {
@@ -56,6 +65,12 @@ const createFacultyIntoDb = async (
   await session.startTransaction()
 
   try {
+    const imageName = `${userData.id}_${facultyData.name.lastName}`
+
+    const imageUrl = await sendImageToCloudinary(imageName, file.path)
+
+    facultyData.profileImg = imageUrl?.secure_url
+
     const newUser = await UserModel.create([userData], { session })
 
     if (!newUser.length) {
@@ -82,6 +97,7 @@ const createFacultyIntoDb = async (
   }
 }
 const createAdminIntoDb = async (
+  file: any,
   userData: Partial<TUser>,
   adminData: TAdmin,
 ) => {
@@ -90,6 +106,12 @@ const createAdminIntoDb = async (
   await session.startTransaction()
 
   try {
+    const imageName = `${userData.id}_${adminData.name.lastName}`
+
+    const imageUrl = await sendImageToCloudinary(imageName, file.path)
+
+    adminData.profileImg = imageUrl?.secure_url
+
     const newUser = await UserModel.create([userData], { session })
 
     if (!newUser.length) {

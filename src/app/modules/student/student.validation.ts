@@ -68,7 +68,7 @@ const studentValidationSchema = z.object({
         }),
         address: z.string({ message: "Local guardian's address is required" }),
       }),
-      profileImage: z.string({ message: 'Profile image is required' }),
+
       academicDepartment: z.string({
         message: 'Academic department is required',
       }),

@@ -15,6 +15,9 @@ interface Config {
   jwtRefreshSecretKey: string | undefined
   jwtAccessExpiresIn: string | undefined
   jwtRefreshExpiresIn: string | undefined
+  cloudinary_cloud_name: string | undefined
+  cloudinary_api_key: string | undefined
+  cloudinary_api_secret: string | undefined
 }
 
 // Export the configuration as an object implementing the Config interface
@@ -28,6 +31,9 @@ const config: Config = {
   jwtRefreshSecretKey: process.env.JWT_REFRESH_KEY,
   jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN,
   jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
+  cloudinary_cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
+  cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
 }
 
 export default config

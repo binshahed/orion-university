@@ -10,7 +10,7 @@ import { courseRouter } from '../modules/course/course.routes'
 import { semesterRegistrationRouter } from '../modules/semesterRegistration/semesterRegistration.routes'
 import { authRouter } from '../modules/auth/auth.routes'
 import { offeredCourseRouter } from '../modules/offeredCourse/offeredCourse.routes'
-
+import { enrolledCourseRouter } from '../modules/enrolledCourse/enrolledCourse.routes'
 
 const modulesRouters = [
   {
@@ -52,6 +52,10 @@ const modulesRouters = [
   {
     path: '/api/v1/offered-course',
     route: offeredCourseRouter,
+  },
+  {
+    path: '/api/v1/enrolled-course',
+    route: enrolledCourseRouter,
   },
   {
     path: '/api/v1/auth',
