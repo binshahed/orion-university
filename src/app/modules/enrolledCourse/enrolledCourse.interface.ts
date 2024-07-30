@@ -24,3 +24,5 @@ export type TEnrolledCourse = {
   gradPoint: number
   isCompleted: boolean
 }
+
+

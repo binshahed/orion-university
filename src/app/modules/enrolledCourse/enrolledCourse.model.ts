@@ -7,18 +7,26 @@ const courseMarksSchema = new Schema<TCourseMarks>(
     classTest1: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 10,
     },
     MidTerm: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 30,
     },
     classTest2: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 10,
     },
     finalTerm: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 50,
     },
   },
   {
