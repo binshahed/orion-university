@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status'
 import { EnrolledCourseModel } from './enrolledCourse.model'
-import { TEnrolledCourse } from './enrolledCourse.interface'
+import { TCourseMarks, TEnrolledCourse } from './enrolledCourse.interface'
 import mongoose, { Schema } from 'mongoose'
 import { SemesterRegistrationModel } from '../semesterRegistration/semesterRegistration.model'
 import { CourseModel } from '../course/course.model'
 import AppError from '../../errors/AppError'
 import {
+  calculateGradeAndPoints,
   calculateTotalCredits,
   checkCreditLimit,
   checkEnrollmentConflict,
@@ -119,7 +120,7 @@ const updateEnrolledCourse = async (
   const {
     semesterRegistration: semesterRegistrationId,
     offeredCourse: offeredCourseId,
-    studentId,
+    student: studentId,
     courseMarks,
   } = payload
 
@@ -130,16 +131,75 @@ const updateEnrolledCourse = async (
   // Get the maximum credit limit for the semester
   const semesterRegistration = await SemesterRegistrationModel.findById(
     semesterRegistrationId,
+    { _id: 1 },
   )
   if (!semesterRegistration) {
     throw new AppError(httpStatus.NOT_FOUND, 'Semester registration not found')
   }
 
-  const student = StudentModel.findById(studentId)
+  const student = await StudentModel.findById(studentId, { _id: studentId })
 
   if (!student) {
     throw new AppError(httpStatus.NOT_FOUND, 'Student not found')
   }
+
+  const faculty = await FacultyModel.findOne(
+    {
+      id: facultyId,
+    },
+    {
+      _id: 1,
+    },
+  )
+
+  if (!faculty) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Faculty Not Found')
+  }
+
+  const isCourseBelongToFaculty = await EnrolledCourseModel.findOne({
+    semesterRegistration,
+    offeredCourse,
+    student,
+    faculty: faculty._id,
+  })
+
+  const modifiedData: Record<string, unknown> = {
+    ...courseMarks,
+  }
+
+  if (courseMarks?.finalTerm) {
+    const { classTest1, midTerm, classTest2, finalTerm } =
+      isCourseBelongToFaculty?.courseMarks as TCourseMarks
+
+    const totalMarks =
+      Math.ceil(classTest1 * 0.1) +
+      Math.ceil(midTerm * 0.3) +
+      Math.ceil(classTest2 * 0.1) +
+      Math.ceil(finalTerm * 0.5)
+    console.log(totalMarks)
+    const calculatePoint = calculateGradeAndPoints(totalMarks)
+    modifiedData.grad = calculatePoint.grade
+    modifiedData.gradPoint = calculatePoint.points
+    modifiedData.isCompleted = true
+  }
+
+  if (courseMarks && Object.keys(courseMarks).length) {
+    for (const [key, value] of Object.entries(courseMarks)) {
+      modifiedData[`courseMarks.${key}`] = value
+    }
+  }
+
+  console.log(modifiedData)
+
+  const result = await EnrolledCourseModel.findByIdAndUpdate(
+    isCourseBelongToFaculty?._id,
+    modifiedData,
+    {
+      new: true,
+    },
+  )
+
+  return result
 }
 
 export const enrolledCourseService = {

@@ -2,7 +2,7 @@ import { ObjectId } from 'mongoose'
 
 export type TCourseMarks = {
   classTest1: number
-  MidTerm: number
+  midTerm: number
   classTest2: number
   finalTerm: number
 }

@@ -110,4 +110,9 @@ StudentSchema.pre('save', function (next) {
   next()
 })
 
+StudentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } })
+  next()
+})
+
 export const StudentModel = model<TStudent>('Student', StudentSchema)

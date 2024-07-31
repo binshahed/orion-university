@@ -10,7 +10,7 @@ const courseMarksSchema = new Schema<TCourseMarks>(
       min: 0,
       max: 10,
     },
-    MidTerm: {
+    midTerm: {
       type: Number,
       default: 0,
       min: 0,

@@ -11,11 +11,11 @@ const updateEnrolledCourseValidationSchema = z.object({
     semesterRegistration: z.string(),
     offeredCourse: z.string(),
     student: z.string(),
-    courseMark: z.object({
-      classTest1: z.number(),
-      midterm: z.number(),
-      classTest2: z.number(),
-      finalTerm: z.number(),
+    courseMarks: z.object({
+      classTest1: z.number().max(100).optional(),
+      midTerm: z.number().max(100).optional(),
+      classTest2: z.number().max(100).optional(),
+      finalTerm: z.number().max(100).optional(),
     }),
   }),
 })

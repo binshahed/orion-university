@@ -95,3 +95,44 @@ export const checkCreditLimit = async (
     )
   }
 }
+
+export const calculateGradeAndPoints = (totalMarks: number) => {
+  let result = {
+    grade: 'NA',
+    points: 0,
+  }
+
+  if (totalMarks >= 0 && totalMarks <= 19) {
+    result = {
+      grade: 'F',
+      points: 0.0,
+    }
+  } else if (totalMarks >= 20 && totalMarks <= 39) {
+    result = {
+      grade: 'D',
+      points: 2.0,
+    }
+  } else if (totalMarks >= 40 && totalMarks <= 59) {
+    result = {
+      grade: 'C',
+      points: 3.0,
+    }
+  } else if (totalMarks >= 60 && totalMarks <= 79) {
+    result = {
+      grade: 'B',
+      points: 3.5,
+    }
+  } else if (totalMarks >= 80 && totalMarks <= 100) {
+    result = {
+      grade: 'A',
+      points: 4.0,
+    }
+  } else {
+    result = {
+      grade: 'NA',
+      points: 0,
+    }
+  }
+
+  return result
+}

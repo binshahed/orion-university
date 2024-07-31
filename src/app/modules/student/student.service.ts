@@ -31,8 +31,17 @@ const getStudents = async (query: Record<string, unknown>) => {
     .sort()
     .paginate()
     .fields()
+    const meta = await studentQueries.countTotal()
 
-  return studentQueries.modelQuery.exec()
+    const result = await studentQueries.modelQuery.exec()
+
+    console.log('meta', meta)
+    console.log('result', result)
+
+    return {
+      meta,
+      result,
+    }
 }
 
 // create students

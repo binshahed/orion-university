@@ -7,7 +7,9 @@ import { USER_ROLE } from '../user/user.const'
 
 const router = Router()
 
-router.route('/').get(studentController.getStudents)
+router
+  .route('/')
+  .get(auth(USER_ROLE.admin, USER_ROLE.faculty), studentController.getStudents)
 router
   .route('/:studentId')
   .get(
