@@ -25,9 +25,15 @@ const createStudentIntoDb = async (
   try {
     const imageName = `${userData.id}_${studentData.name.lastName}`
 
-    const imageUrl = await sendImageToCloudinary(imageName, file.path)
+    let imageUrl
 
-    studentData.profileImage = imageUrl?.secure_url
+    if (file) {
+      imageUrl = await sendImageToCloudinary(imageName, file.path)
+
+      studentData.profileImage = imageUrl?.secure_url
+    } else {
+      imageUrl = ''
+    }
 
     const newUser = await UserModel.create([userData], { session })
 

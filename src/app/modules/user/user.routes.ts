@@ -17,7 +17,7 @@ router.post(
   auth(USER_ROLE.admin),
   upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
-    req.body = JSON.parse(req.body.data)
+    req.body = JSON.parse(req?.body?.data)
     next()
   },
   validateRequest(StudentValidation.studentValidationSchema),
